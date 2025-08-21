@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas Seguras</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Gerador de Senhas</h1>
+            <p>Crie senhas seguras e personalizadas</p>
+        </header>
+        
+        <main>
+            <div class="password-display">
+                <input type="text" id="password" readonly>
+                <button id="copy-btn">Copiar</button>
+            </div>
+            
+            <div class="options">
+                <div class="option">
+                    <label for="length">Comprimento da senha: <span id="length-value">12</span></label>
+                    <input type="range" id="length" min="6" max="30" value="12">
+                </div>
+                
+                <div class="option">
+                    <input type="checkbox" id="uppercase" checked>
+                    <label for="uppercase">Letras maiúsculas (A-Z)</label>
+                </div>
+                
+                <div class="option">
+                    <input type="checkbox" id="lowercase" checked>
+                    <label for="lowercase">Letras minúsculas (a-z)</label>
+                </div>
+                
+                <div class="option">
+                    <input type="checkbox" id="numbers" checked>
+                    <label for="numbers">Números (0-9)</label>
+                </div>
+                
+                <div class="option">
+                    <input type="checkbox" id="symbols">
+                    <label for="symbols">Símbolos (!@#$%&*)</label>
+                </div>
+            </div>
+            
+            <button id="generate-btn">Gerar Nova Senha</button>
+        </main>
+        
+        <footer>
+            <p>Desenvolvido com ❤️ usando HTML e CSS</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Elementos do DOM
+        const passwordElement = document.getElementById('password');
+        const lengthSlider = document.getElementById('length');
+        const lengthValue = document.getElementById('length-value');
+        const uppercaseCheckbox = document.getElementById('uppercase');
+        const lowercaseCheckbox = document.getElementById('lowercase');
+        const numbersCheckbox = document.getElementById('numbers');
+        const symbolsCheckbox = document.getElementById('symbols');
+        const generateButton = document.getElementById('generate-btn');
+        const copyButton = document.getElementById('copy-btn');
+        
+        // Atualizar valor do comprimento
+        lengthSlider.addEventListener('input', () => {
+            lengthValue.textContent = lengthSlider.value;
+        });
+        
+        // Gerar senha
+        generateButton.addEventListener('click', generatePassword);
+        
+        // Gerar senha ao carregar a página
+        window.addEventListener('load', generatePassword);
+        
+        // Copiar senha
+        copyButton.addEventListener('click', () => {
+            passwordElement.select();
+            document.execCommand('copy');
+            copyButton.textContent = 'Copiado!';
+            setTimeout(() => {
+                copyButton.textContent = 'Copiar';
+            }, 2000);
+        });
+        
+        // Função para gerar senha
+        function generatePassword() {
+            const length = lengthSlider.value;
+            const includeUppercase = uppercaseCheckbox.checked;
+            const includeLowercase = lowercaseCheckbox.checked;
+            const includeNumbers = numbersCheckbox.checked;
+            const includeSymbols = symbolsCheckbox.checked;
+            
+            // Verificar se pelo menos uma opção está selecionada
+            if (!includeUppercase && !includeLowercase && !includeNumbers && !includeSymbols) {
+                passwordElement.value = 'Selecione pelo menos uma opção';
+                return;
+            }
+            
+            // Conjuntos de caracteres
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const symbols = '!@#$%&*()_+-=[]{}|;:,.<>?';
+            
+            // Criar conjunto de caracteres baseado nas seleções
+            let charset = '';
+            if (includeUppercase) charset += uppercase;
+            if (includeLowercase) charset += lowercase;
+            if (includeNumbers) charset += numbers;
+            if (includeSymbols) charset += symbols;
+            
+            // Gerar senha
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            
+            passwordElement.value = password;
+        }
+    </script>
+</body>
+</html>
